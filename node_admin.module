@@ -19,17 +19,10 @@ function node_admin_menu() {
       'page arguments' => array($type),
       'access arguments' => array('administer ' . $type . ' node'),
       'type' => MENU_LOCAL_TASK,
+      'file' => 'node_admin.pages.inc',
     );
   }
   return $items;
-}
-
-/**
- *  Implements hook_menu_alter().
- */
-function node_admin_menu_alter(&$items) {
-  $items['admin/content/node_admin']['access callback'] = 'user_access';
-  $items['admin/content/node_admin']['access arguments'] = array('administer node admin module');
 }
 
 /**
@@ -37,10 +30,6 @@ function node_admin_menu_alter(&$items) {
  */
 function node_admin_permission() {
   $permissions = array();
-  $permissions['administer node admin module'] = array(
-    'title' => t('Administer node admin module'),
-    'description' => t('Administer the functionality of node admin module'),
- );
   $types = node_type_get_types();
   foreach ($types as $type => $type_object) {
     $permissions['administer ' . $type . ' node'] = array(
@@ -58,15 +47,4 @@ function node_admin_views_api() {
   return array(
     'api' => 3,
   );
-}
-
-/**
- * Page callback.
- *
- * @param $type
- *
- * @return bool
- */
-function node_admin_page($type) {
-  return views_embed_view('admin_node', 'system_1', $type);
 }
