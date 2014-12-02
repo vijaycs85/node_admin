@@ -30,10 +30,6 @@ function node_admin_menu() {
  */
 function node_admin_permission() {
   $permissions = array();
-  $permissions['administer node admin module'] = array(
-    'title' => t('Administer node admin module'),
-    'description' => t('Administer the functionality of node admin module'),
- );
   $types = node_type_get_types();
   foreach ($types as $type => $type_object) {
     $permissions['administer ' . $type . ' node'] = array(
