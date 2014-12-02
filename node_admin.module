@@ -19,6 +19,7 @@ function node_admin_menu() {
       'page arguments' => array($type),
       'access arguments' => array('administer ' . $type . ' node'),
       'type' => MENU_LOCAL_TASK,
+      'file' => 'node_admin.pages.inc',
     );
   }
   return $items;
@@ -58,15 +59,4 @@ function node_admin_views_api() {
   return array(
     'api' => 3,
   );
-}
-
-/**
- * Page callback.
- *
- * @param $type
- *
- * @return bool
- */
-function node_admin_page($type) {
-  return views_embed_view('admin_node', 'system_1', $type);
 }
