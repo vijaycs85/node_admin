@@ -13,5 +13,5 @@
  * @return bool
  */
 function node_admin_page($type) {
-  return views_embed_view('admin_node', 'system_1', $type);
+  return views_embed_view('node_admin', 'block_1', $type);
 }

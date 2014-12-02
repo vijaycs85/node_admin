@@ -11,9 +11,9 @@
 function node_admin_menu() {
   $items = array();
   $types = node_type_get_types();
-  foreach ($types as $type => $type_object) {
+  foreach ($types as $type => $node_type) {
     $items['admin/content/node/'. $type] = array(
-      'title' => check_plain($type),
+      'title' => check_plain($node_type->name),
       'description' => 'Administer content.',
       'page callback' => 'node_admin_page',
       'page arguments' => array($type),
@@ -23,14 +23,6 @@ function node_admin_menu() {
     );
   }
   return $items;
-}
-
-/**
- *  Implements hook_menu_alter().
- */
-function node_admin_menu_alter(&$items) {
-  $items['admin/content/node_admin']['access callback'] = 'user_access';
-  $items['admin/content/node_admin']['access arguments'] = array('administer node admin module');
 }
 
 /**

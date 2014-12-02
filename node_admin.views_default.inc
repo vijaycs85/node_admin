@@ -25,7 +25,6 @@ function node_admin_views_default_views() {
   $handler->display->display_options['css_class'] = 'admin-views-view';
   $handler->display->display_options['use_ajax'] = TRUE;
   $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'menu';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['distinct'] = TRUE;
@@ -369,12 +368,12 @@ function node_admin_views_default_views() {
   $handler->display->display_options['filters']['vid']['expose']['identifier'] = 'vid';
   $handler->display->display_options['filters']['vid']['expose']['remember'] = TRUE;
 
-  /* Display: System */
-  $handler = $view->new_display('system', 'System', 'system_1');
+  /* Display: Admin */
+  $handler = $view->new_display('block', 'Admin', 'block_1');
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['hide_admin_links'] = TRUE;
   $handler->display->display_options['defaults']['access'] = FALSE;
-  $handler->display->display_options['path'] = 'admin/content/node_admin';
+  $handler->display->display_options['access']['type'] = 'none';
 
   return array($view->name => $view);
 }
