@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Page callbacks for Node Admin module.
+ * @file
+ * Contains page callbacks of Node Admin module
  */
 
 
