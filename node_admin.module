@@ -11,9 +11,9 @@
 function node_admin_menu() {
   $items = array();
   $types = node_get_types();
-  foreach ($types as $type => $type_object) {
+  foreach ($types as $type => $node_type) {
     $items['admin/content/node/'. $type] = array(
-      'title' => check_plain($type),
+      'title' => check_plain($node_type->name),
       'description' => 'Administer content.',
       'page callback' => 'node_admin_page',
       'page arguments' => array($type),
