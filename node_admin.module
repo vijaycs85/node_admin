@@ -10,7 +10,7 @@
  */
 function node_admin_menu() {
   $items = array();
-  $types = node_type_get_types();
+  $types = node_get_types();
   foreach ($types as $type => $type_object) {
     $items['admin/content/node/'. $type] = array(
       'title' => check_plain($type),
@@ -19,6 +19,7 @@ function node_admin_menu() {
       'page arguments' => array($type),
       'access arguments' => array('administer ' . $type . ' node'),
       'type' => MENU_LOCAL_TASK,
+      'file' => 'node_admin.pages.inc'
     );
   }
   return $items;
@@ -35,18 +36,11 @@ function node_admin_menu_alter(&$items) {
 /**
  * Implements hook_permission().
  */
-function node_admin_permission() {
-  $permissions = array();
-  $permissions['administer node admin module'] = array(
-    'title' => t('Administer node admin module'),
-    'description' => t('Administer the functionality of node admin module'),
- );
-  $types = node_type_get_types();
+function node_admin_perm() {
+  $permissions = array('administer node admin module');
+  $types = node_get_types();
   foreach ($types as $type => $type_object) {
-    $permissions['administer ' . $type . ' node'] = array(
-      'title' => t('Administer @type', array('@type' => $type)),
-      'description' => t('Administer the @type nodes', array('@type' => $type)),
-    );
+    $permissions[] = 'administer ' . $type . ' node';
   }
   return $permissions;
 }
@@ -56,17 +50,6 @@ function node_admin_permission() {
  */
 function node_admin_views_api() {
   return array(
-    'api' => 3,
+    'api' => 2,
   );
-}
-
-/**
- * Page callback.
- *
- * @param $type
- *
- * @return bool
- */
-function node_admin_page($type) {
-  return views_embed_view('admin_node', 'system_1', $type);
 }
