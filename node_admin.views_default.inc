@@ -351,7 +351,7 @@ function node_admin_views_default_views() {
   ));
   $handler->override_option('access', array(
     'type' => 'perm',
-    'perm' => 'administer nodes',
+    'perm' => 'access content',
   ));
   $handler->override_option('cache', array(
     'type' => 'none',
