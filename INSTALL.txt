@@ -1,0 +1,13 @@
+INSTALL
+-------
+
+1. Download the module
+2. Go to admin/build/modules
+3. Enable the module
+4. Set the permission provided by this module to required role
+
+
+Configuration
+-------------
+
+1. Requires Views Bulk Operations module version 6.x-1.16 (or above)
