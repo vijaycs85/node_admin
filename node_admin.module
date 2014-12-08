@@ -18,7 +18,6 @@ function node_admin_menu() {
       'page callback' => 'node_admin_page',
       'page arguments' => array($type),
       'access arguments' => array('administer ' . $type . ' node'),
-      'type' => MENU_LOCAL_TASK,
       'file' => 'node_admin.pages.inc',
     );
   }
@@ -32,7 +31,7 @@ function node_admin_perm() {
   $permissions = array();
   $types = node_get_types();
   foreach ($types as $type => $type_object) {
-    $permissions[] = 'administer ' . $type . ' node';
+    $permissions[] = node_admin_get_permission($type);
   }
   return $permissions;
 }
@@ -44,4 +43,60 @@ function node_admin_views_api() {
   return array(
     'api' => 2,
   );
+}
+
+/**
+ * Provides permission string by type
+ *
+ * @param $type
+ *
+ * @return string
+ */
+function node_admin_get_permission($type) {
+  return 'administer ' . $type . ' node';
+}
+
+/**
+ * Form constructor for node type selector on content admin pages.
+ */
+function node_admin_type_select_form(&$form_state) {
+  $content_types = array();
+  $form = array();
+
+  $types = node_get_types();
+  foreach ($types as $type => $node_type) {
+    if (user_access(node_admin_get_permission($type))) {
+      $content_types[$type] = $node_type->name;
+    }
+  }
+
+  // Display drop down only when more than one option available.
+  if (count($content_types) > 1) {
+    $form['node_admin'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Node Admin',
+    );
+
+    $form['node_admin']['content_type'] = array(
+      '#type' => 'select',
+      '#title' => 'Content type',
+      '#options' => $content_types,
+      '#default_value' => arg(3),
+    );
+
+    $form['node_admin']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Show'),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Form submission handler for node_admin_type_select_form().
+ */
+function node_admin_type_select_form_submit($form, &$form_state) {
+  // Redirect to content type specific admin page.
+  drupal_goto('admin/content/node/' . $form_state['values']['content_type']);
 }
