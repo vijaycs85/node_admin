@@ -17,7 +17,7 @@ function node_admin_menu() {
       'description' => 'Administer content.',
       'page callback' => 'node_admin_page',
       'page arguments' => array($type),
-      'access arguments' => array('administer ' . $type . ' node'),
+      'access arguments' => array(node_admin_get_permission($type)),
       'file' => 'node_admin.pages.inc',
     );
   }
@@ -53,7 +53,7 @@ function node_admin_views_api() {
  * @return string
  */
 function node_admin_get_permission($type) {
-  return 'administer ' . $type . ' node';
+  return 'administer ' . $type . ' nodes';
 }
 
 /**

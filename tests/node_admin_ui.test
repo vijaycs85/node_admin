@@ -1,0 +1,142 @@
+<?php
+
+/**
+ * @file
+ * Contains NodeAdminUITest.
+ */
+
+/**
+ * Test cases for Node Admin module UI.
+ */
+class NodeAdminUITest extends DrupalWebTestCase {
+
+  /**
+   * @var object
+   *  page admin user object.
+   */
+  protected $page_admin;
+
+  /**
+   * @var object
+   *  content admin user object.
+   */
+  protected $content_admin;
+
+  function getInfo() {
+    return array(
+      'name' => 'Node admin UI test',
+      'group' => 'Node admin',
+      'description' => 'Tests node admin UI'
+    );
+  }
+
+  /**
+   * Set up some required modules and users.
+   */
+  function setUp() {
+    parent::setUp('node', 'views', 'views_bulk_operations', 'node_admin');
+    $this->page_admin = $this->drupalCreateUser(array('administer page nodes', 'create page content', 'delete any page content', 'edit any page content'));
+    $this->content_admin =  $this->drupalCreateUser(array('administer nodes', 'administer page nodes', 'administer story nodes', 'delete any page content', 'delete any story content'));
+  }
+
+  /**
+   * Test page content type administer functionality.
+   */
+  function testPageAdminPages() {
+    // Login as content type specific node admin.
+    $this->drupalLogin($this->page_admin);
+
+    // Make sure page admin has access.
+    $this->drupalGet('admin/content/node/page');
+    $this->assertResponse(200);
+
+    // No access to other content type admin page.
+    $this->drupalGet('admin/content/node/story');
+    $this->assertResponse(403);
+
+    // Check 403 for invalid content type.
+    $this->drupalGet('admin/content/node/foo');
+    $this->assertResponse(403);
+
+    // Create a new page node.
+    $node = $this->drupalCreateNode(array('type' => 'page'));
+    $this->drupalGet('admin/content/node/page');
+
+    // Check if it is available in admin page.
+    $this->assertNodeItem($node);
+  }
+
+  /**
+   * Test content admin user functionality.
+   */
+  function testContentAdminPages() {
+    // Login as global node admin.
+    $this->drupalLogin($this->content_admin);
+
+    // Make sure content admin has access to all admin pages.
+    $this->drupalGet('admin/content/node');
+    $this->assertResponse(200);
+    $this->drupalGet('admin/content/node/page');
+    $this->assertResponse(200);
+    $this->drupalGet('admin/content/node/story');
+    $this->assertResponse(200);
+
+    // Create a page node and a story.
+    $page = $this->drupalCreateNode(array('type' => 'page'));
+    $story = $this->drupalCreateNode(array('type' => 'story'));
+    $this->drupalGet('admin/content/node');
+    // Check all nodes available in node admin page.
+    $this->assertNodeItem($page, TRUE);
+    $this->assertNodeItem($story, TRUE);
+
+    // Only specific content type nodes in its own admin page.
+    $this->drupalGet('admin/content/node/page');
+    $this->assertNodeItem($page);
+    $this->assertNoNodeItem($story);
+    $this->drupalGet('admin/content/node/story');
+    $this->assertNodeItem($story);
+    $this->assertNoNodeItem($page);
+  }
+
+  /**
+   * Asserts node item in node admin list.
+   *
+   * @param object $node
+   *   Node object to assert.
+   * @param bool $is_admin_page
+   *   Flag to specify core node admin page or not.
+   *
+   */
+  protected function assertNodeItem($node, $is_admin_page = FALSE) {
+    // Make sure node present with link.
+    $this->assertLink($node->title);
+    $this->assertLinkByHref('node/' . $node->nid);
+    // Check for edit/delete link of this node.
+    $this->assertLinkByHref('node/' . $node->nid . '/edit');
+    if (!$is_admin_page) {
+      $this->assertLinkByHref('node/' . $node->nid . '/delete');
+    }
+
+  }
+
+  /**
+   * Asserts no node item in node admin list.
+   *
+   * @param object $node
+   *   Node object to assert.
+   * @param bool $is_admin_page
+   *   Flag to specify core node admin page or not.
+   *
+   */
+  protected function assertNoNodeItem($node, $is_admin_page = FALSE) {
+    // Make sure node title is present as link.
+    $this->assertNoLink($node->title);
+    $this->assertNoLinkByHref('node/' . $node->nid);
+    // Check for no edit/delete link of this node.
+    $this->assertNoLinkByHref('node/' . $node->nid . '/edit');
+    if (!$is_admin_page) {
+      $this->assertNoLinkByHref('node/' . $node->nid . '/delete');
+    }
+  }
+
+}
