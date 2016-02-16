@@ -1,4 +1,4 @@
 name = Node Admin
-description = Allows to administer nodes per content type. Provides a node list page per content type with speicific permission.
+description = Allows to administer nodes per content type. Provides a node list page per content type with specific permission.
 core = 6.x
 dependencies[] = views_bulk_operations
